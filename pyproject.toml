@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=62.6"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "speechmatching"
+version = "1.0.0"
+dynamic = ["dependencies", "optional-dependencies"]
+authors = [{name = "Auke Schuringa", email = "auke.schuringa@proton.me"}]
+description = "Matching short audio segments of speech with each other."
+readme = "README.rst"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3"
+]
+license = { file = "LICENSE.txt" }
+
+[tool.setuptools]
+packages = ["speechmatching"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.dynamic.optional-dependencies.dev]
+file = ["dev-requirements.txt"]
+
+[project.urls]
+Homepage = "https://github.com/W4RA/speechmatching"
+Issues = "https://github.com/W4RA/speechmatching/issues"
+Repository = "https://github.com/W4RA/speechmatching.git"
+Changelog = "https://github.com/W4RA/speechmatching/blob/master/CHANGELOG.rst"
+Documentation = "https://w4ra.github.io/speechmatching/"

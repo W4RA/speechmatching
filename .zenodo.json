@@ -1,0 +1,18 @@
+{
+    "title": "speechmatching: Phonetically match spoken words",
+    "description": "Phonetically match spoken words.",
+    "languages": [
+        {
+            "id": "eng"
+        }
+    ],
+    "note": "Originally written for the references Master's thesis.",
+    "references": "Auke Schuringa, \"Energy-efficient phonetic matching for spoken words of rare indigenous languages in low-resource environments,\" Master's thesis, Vrĳe Universiteit Amsterdam and University of Amsterdam, Amsterdam, The Netherlands, Jan. 2025.",
+    "creators": [
+        {
+            "name": "Auke Schuringa"
+        }
+    ],
+    "license": "GNU-AGPLv3",
+    "upload_type": "software"
+}

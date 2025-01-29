@@ -1,0 +1,5 @@
+ffmpeg-python
+jellyfish
+python-magic
+numpy
+docker

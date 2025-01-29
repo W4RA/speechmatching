@@ -1,0 +1,6 @@
+﻿speechmatching
+==============
+
+.. automodule:: speechmatching
+
+   
