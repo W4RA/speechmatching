@@ -34,8 +34,8 @@ def format_audio(
     Args:
         input_filepath: The audio or video file to convert.
         output_filepath: A filepath ending with ``.wav`` to store the result in.
-            If this is not given, the ``input_filepath`` is with ``_processed.wav``
-            appended to it and used.
+            If this is not given, the ``input_filepath`` has ``_processed.wav``
+            appended to it and is used instead.
         overwrite: Whether to overwrite the output file or not. Has default
             value ``True``.
 

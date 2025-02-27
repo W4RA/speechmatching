@@ -1,7 +1,7 @@
 """Module containing the functions for calculating matching scores.
 
-The functions help with creating the algorithms for normalization of string and
-matching of algorithms, and combinations of the two.
+The functions help with creating the algorithms for normalization or matching
+of strings, and combinations of the two.
 """
 
 import copy
@@ -120,11 +120,10 @@ def ensure_algs_dict(
         match_algs: The representation of matching algorithms.
 
     Returns:
-        A tuple of:
-            - the dictionary of normalization algorithms, and
-            - the dictionary of matching algorithms, where the dictionary of
-              the matching algorithms has used information from the dictionary
-              of normalization algorithms.
+        A tuple of the dictionary of normalization algorithms, and the
+        dictionary of matching algorithms, where the dictionary of
+        the matching algorithms has used information from the dictionary
+        of normalization algorithms.
     """
     norm_algs = ensure_norm_algs_dict(norm_algs)
     match_algs = ensure_norm_algs_dict(match_algs)
@@ -236,8 +235,7 @@ def match(
     r"""Calculate a matching score between two strings.
 
     The strings are expected to be normalized, however this is not strictly
-    necessary. This function will not further normalize the given string,
-    however.
+    necessary. This function will not further normalize the given strings.
 
     Args:
         normed1: The first string to compare.

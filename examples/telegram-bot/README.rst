@@ -15,8 +15,8 @@ states:
  - Recording registration state: the bot expects a voice message to register with
    the previously given textual representation of it. One or more recording
    may be given after each other. If instead of a recording, a text message is
-   received, the bot will abandon the previous word if not recordings were
-   registered to it, or keep it, and more to the "text state".
+   received, the bot will abandon the previous word if no recordings were
+   registered to it, or keep it, and move to the "text state".
 
  - Interpretation state: the bot expects a voice message to match against
    the previously registered recordings.
@@ -25,20 +25,20 @@ The commands to move between the states are as follows:
 
  - ``\new``: remove all recordings and switch to the text state.
 
- - ``\interpret``: move from the test or recording registration state to the
+ - ``\interpret``: move from the text or recording registration state to the
    interpretation state.
 
 Setup
 *****
 
-For the Telegram bot, one needs to get a token from Telegram for the `guide`_
+For the Telegram bot, one needs to get a token from Telegram for which the guide [telegramguide]_
 can be followed. When this token is available, change the name of file
 ``env.list.CHANGEME`` to ``env.list``, and replace dummy token
 ``123456789:abcdefghijklmnopqrstuvwxyzABCDEFGH`` by the token from Telegram.
 
 When the token is in place, the bot can be run manually or using Docker.
 
-.. _guide: https://core.telegram.org/bots/features#botfather
+.. [telegramguide] https://core.telegram.org/bots/features#botfather
 
 Manual
 ======
@@ -53,7 +53,8 @@ environment with::
     source env.list
     set +a
 
-After which the instructions from the setup for the Basic example are the same.
+After which the instructions from the setup for the Basic example are the same
+and can be followed further.
 
 Docker
 ======

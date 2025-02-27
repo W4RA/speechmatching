@@ -11,19 +11,29 @@ To compile the ``acoustic`` binary, several dependencies with specific versions 
 Docker
 ======
 
-To compile the ``acoustic`` binary and the ``speechmatching`` package into a Docker image, use the ``Dockerfile`` provided in the repositories root directory. Build the Docker image under the name ``flashlight-acoustic`` so the image can be easily accessed by the ``speechmatching`` package:
+The Docker image can be pulled under name ``aukesch/speechmatching`` with the ``acoustic`` binary already built in the image, with:
 
 .. code-block:: bash
 
-    docker build . -t flashlight-acoustic
+    docker pull aukesch/speechmatching
+
+Alternatively, to compile the ``acoustic`` binary and the ``speechmatching`` package into a Docker image, use the ``Dockerfile`` provided in the repositories root directory. Build the Docker image under the name ``speechmatching`` so the image can be easily found by the ``speechmatching`` package:
+
+.. code-block:: bash
+
+    docker build . -t speechmatching
 
 This process may take several minutes to complete.
+
+The Docker image name ``speechmatching`` is used for manually built Docker images, which can be useful during for example testing, while the image ``aukesch/speechmatching`` is the one that is maintained by the maintainers of the ``speechmatching`` package. The ``speechmatching`` package will first look for the ``speechmatching`` Docker image, and else look for or pull the ``aukesch/speechmatching`` image.
 
 Manual
 ======
 
-The following versions of the dependencies were found to work well. It is possible other versions are also supported, but this was not thoroughly tested:
+The following versions of the dependencies were found to work well. It is possible other versions are also supported, but this was not thoroughly tested.
+
  - ArrayFire [arrayfire]_ version ``3.8.3`` with options
+
     - ``AF_BUILD_CPU=ON``
     - ``AF_BUILD_CUDA=OFF``
     - ``AF_BUILD_OPENCL=OFF``
@@ -31,13 +41,21 @@ The following versions of the dependencies were found to work well. It is possib
     - ``AF_WITH_IMAGEIO=OFF``
     - ``BUILD_TESTING=OFF``
     - ``AF_BUILD_DOCS=OFF``
+
  - oneDNN [onednn]_ version ``2.5.2`` with options
+
     - ``DNNL_BUILD_EXAMPLES=OFF``
+
  - Gloo [gloo]_ branch ``56b221c0a811491d2dc2a3254b468ad687bbdaab`` with options
+
     - ``USE_MPI=ON``
+
  - kenlm [kenlm]_ branch ``9af679c38477b564c26917a5dcf52d2c86177fb9`` with options
+
     - ``CMAKE_POSITION_INDEPENDENT_CODE=ON``
+
  - Flashlight [flashlight]_ version ``0.3.1`` with options
+
     - ``FL_BACKEND=CPU``
     - ``FL_BUILD_ALL_APPS=OFF``
     - ``FL_BUILD_PKG_TEXT=ON``
@@ -47,6 +65,7 @@ The following versions of the dependencies were found to work well. It is possib
     - ``FL_BUILD_EXAMPLES=OFF``
     - ``FL_BUILD_APP_ASR=ON``
     - ``FL_BUILD_APP_ASR_TOOLS=ON``
+
  - Library ``intel-mkl-64bit-2020.4-912`` from Intel repos [intelrepos]_ as:
 
     .. code-block:: bash
@@ -58,7 +77,7 @@ The following versions of the dependencies were found to work well. It is possib
 
 All of the above should also be combined with option ``CMAKE_BUILD_TYPE=Release``.
 
-The ``acoustic`` binary itself should can then be made and installed by:
+The ``acoustic`` binary itself can then be made and installed by:
 
 .. code-block:: bash
 
@@ -85,11 +104,9 @@ The acoustic binary can be run with the following arguments:
 
 --help  Show the help message.
 
--i PATH, --input-filepath PATH    Path to the WAV file to process, which should have a single channels and 16000 hertz.
+-i PATH, --input-filepath PATH    Path to the WAV file to process, which should have a single channel of 16000 hertz.
 
---am PATH, --acoustic-model-filepath PATH        Path to the acoustic model to use, this is usually either the
- - 70 million parameter model [70model]_,
- - or the 300 million parameter model [300model]_.
+--am PATH, --acoustic-model-filepath PATH        Path to the acoustic model to use, this is usually either the 70 million parameter model [70model]_, or the 300 million parameter model [300model]_.
 
 -o PATH, --output-filepath PATH             Path to the file to write the probabilities to. If the options ``-stdin`` is used, this file is overwritten whenever a new WAV file is given for processing.
 
@@ -104,7 +121,7 @@ The acoustic binary can be run with the following arguments:
 ``speechmatching`` package
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When compiled into a Docker image under name ``flashlight-acoustic``, the ``speechmatching`` package can be installed locally with ``pip``, and it will look for and start a container for the ``flashlight-acoustic`` image. When the program is stopped, the package will attempt to stop and remove any created container.
+When compiled into a Docker image under name ``speechmatching``, the ``speechmatching`` package can be installed locally with ``pip``, and it will look for and start a container for the ``speechmatching`` or ``aukesch/speechmatching`` Docker image. When the program is stopped, the package will attempt to stop and remove any created container.
 
 See the documentation for the ``speechmatching`` package for further information.
 

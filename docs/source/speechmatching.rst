@@ -39,7 +39,7 @@ Experiments
 Submodules
 **********
 
-The ``speechmatching`` package contains verious submodules. Of these submodules, usually only the submodule ``speechmatching.recording`` should be used. This submodule contains the functions for loading directories, and creating and handling ``Group``, ``Recording``, and ``Transcript`` instances.
+The ``speechmatching`` package contains various submodules. Of these submodules, usually only the submodule ``speechmatching.recording`` should be used. This submodule contains the functions for loading directories, and creating and handling ``Group``, ``Recording``, and ``Transcript`` instances.
 
 .. toctree::
    :maxdepth: 4

@@ -1,18 +1,18 @@
 Basic example
 #############
 
-This basic example downloads a zip `file`_ with directories of recordings,
+This basic example downloads a zip file [zipfile]_ with directories of recordings,
 unpacks this in the current directory, and peforms various operations with the
 sound recordings.
 
 In "basic example 1", basic loading, transcript calculation, and similarity score
 calculation is done. In "basic example 2", a small number of three groups of
-recordings are created, with each having between 2 and 4 recordings. An final
+recordings are created, with each having between 2 and 4 recordings. A final
 recording is then separately loaded and matched with the three groups to see
 which group matches the unknown recording best.
 
 Finally, in "basic example 3", all downloaded recordings are loaded from
-the directories. One group is created per directory, and all recordings from
+their directories. One group is created per directory, and all recordings from
 that directory are added to that group.
 
 A group is then taken to be tested with, and 20 random chosen recordings from
@@ -27,7 +27,7 @@ Please see the code in ``example.py`` for comments on how this works.
     they are also processed by the ``acoustic`` binary to have information
     extracted from them. This may take some time.
 
-.. _file: https://zenodo.org/api/records/13284005/files/recordings.zip
+.. [zipfile] https://zenodo.org/api/records/13284005/files/recordings.zip
 
 Setup
 *****
@@ -51,8 +51,8 @@ install the ``speechmatching`` package. From the two directories up with::
 
     (cd ../..; pip install .)
 
-and make sure that the ``acoustic`` binary is already built using instructions
-in the main ``README`` of this repository.
+and make sure that the ``acoustic`` binary is already built and available using
+instructions in the main ``README`` of this repository.
 
 All requirements from ``requirements.txt`` need to be installed::
 

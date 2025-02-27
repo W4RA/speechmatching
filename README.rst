@@ -70,9 +70,9 @@ There are two ways to use the ``speechmatching`` package - either locally or fro
 Local
 =====
 
-Running locally requires (automatically pulled) the Docker image containing the ``acoustic`` binary. This image sets the environment variable ``ACOUSTIC_RUNNING_IN_DOCKER=1``, which is not available when running outside the container.
+Running locally requires the (automatically pulled) Docker image containing the ``acoustic`` binary. This image sets the environment variable ``ACOUSTIC_RUNNING_IN_DOCKER=1``, which is not available when running outside the container.
 
-When running ``speechmatching`` and an audio file needs to be processed, the package detects that it is not in Docker, then attempts to start a container from the ``aukesch/speechmatching`` Docker image (and attempt to pull it if it is not available locally). It will communicate with this container to process the audio file. When the program stops, the package tries to stop and remove the created container.
+When running ``speechmatching`` and an audio file needs to be processed, the package detects that it is not running in Docker, then attempts to start a container from the ``speechmatching`` or ``aukesch/speechmatching`` Docker image (and attempt to pull it if it is not available locally). It will communicate with this container to process the audio file. When the program stops, the package tries to stop and remove the created container.
 
 In other words, all that is needed is for Docker to be installed and set up correctly, and then the package can be run normally. These steps were explained in the previous section.
 
@@ -93,7 +93,7 @@ In other words, all that is needed is for Docker to be installed and set up corr
 Docker
 ======
 
-Alternatively, the ``speechmatching`` package entirely inside Docker. In this scenario, the package detects that the ``ACOUSTIC_RUNNING_IN_DOCKER=1`` environment variable is present and attempts to interact with the ``acoustic`` binary locally within the same container.
+Alternatively, the ``speechmatching`` package can be run entirely inside Docker. In this scenario, the package detects that the ``ACOUSTIC_RUNNING_IN_DOCKER=1`` environment variable is present and attempts to interact with the ``acoustic`` binary locally within the same container.
 
 To do this, include a ``Dockerfile`` in the directory of the code with a structure like:
 
@@ -129,7 +129,7 @@ In the following example, we assume the user has several audio files:
 
 The last file in this list is named ``unknown.mp3``, and it is believed this audio file belongs to one of the three spoken words ``speech``, ``house``, or ``tree``, for which we have several samples available.
 
-A single recording can be loaded and analysed:
+A single recording can be loaded and analyzed:
 
 .. code-block:: python
 

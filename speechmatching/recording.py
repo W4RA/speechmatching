@@ -83,12 +83,12 @@ class Transcript:
     """The handling of raw output for a transcript.
 
     The raw transcript is in a form as shown the description of the
-    ``raw`` variable in initializing function, and usually comes from the
+    ``raw`` variable below, and usually comes from the
     :class:`speechmatching.model.Transcriptor` used in the :class:`Recording`
     class.
 
     This class performs various operations on the raw data, like extracting
-    probably texts, and calculating matching scores with different transcripts.
+    probable texts, and calculating matching scores with different transcripts.
 
     Args:
         raw: The string with multiple lines for the probabilities of
@@ -128,8 +128,8 @@ class Transcript:
         only the probabilities are included from the raw data.
 
         Returns:
-            The matrix of probabilities with the time step on the major axis
-            and the character probability on the minor axis.
+            The matrix of probabilities with the time step on the y-axis
+            and the character probability on the x-axis.
         """
         return np.array([
             [float(d) for d in line.strip().split(' ')]
@@ -165,7 +165,7 @@ class Transcript:
 
     def probable_texts(
         self,
-        min_probability: float = 0.01,
+        min_probability: float = 0.2,
         cache: bool = True,
         normalize: bool = True,
         or_best: bool = False,
@@ -173,10 +173,10 @@ class Transcript:
     ) -> typing.Dict[str, float]:
         """Calculate probable texts from the raw data and their probabilities.
 
-        The raw given to the instance has probabilities at each time step for
-        given characters. With these probabilities, probable texts or strings
-        of characters can be calculated. This can be done by listing all
-        characters in each time step with a probability above the minimal
+        The raw data given to the instance has probabilities at each time step
+        for given characters. With these probabilities, probable texts or
+        strings of characters can be calculated. This can be done by taking
+        all characters in each time step with a probability above the minimum
         probability and combining these into multiple strings.
 
         It can happen that multiple characters in a time step have a sufficient
@@ -195,16 +195,16 @@ class Transcript:
 
         Args:
             min_probability: The minimum probability for a token to be
-                considered. Has a default value of 0.01.
-            cache: Use the cache store a calculation for the given set of
-                arguments, or to retrieve the calculation from there and return
+                considered. Has a default value of 0.2.
+            cache: Use the cache to store the result for the given set of
+                arguments, or to retrieve the result from there and return
                 it.
             normalize: Normalize the probabilities for the returned texts to 1.
             or_best: If no text could be extracted due to all character not
                 exceeding the minimum probability, simply take the most likely
                 text, which is the text return by the `text` property of the
                 instance.
-            or_best_char: if not character for a time step could be selected
+            or_best_char: if no character for a time step could be selected
                 due to none of them exceeding the minimum probability, use the
                 character from the time step with the highest probability.
 
@@ -292,7 +292,7 @@ class Transcript:
         they should count in the final result.
 
         Please also see the description in the function :meth:`probable_texts` of
-        this class to read how the used probably texts are calculated.
+        this class to read how the used probable texts are calculated.
 
         Args:
             others: The other transcripts to calculate a similarity score with.
@@ -324,12 +324,6 @@ class Transcript:
                 default. For the normalization algorithms this is::
 
                     ['soundex', 'nysiis', 'metaphone']
-
-            algs_match: See the documentation for the
-                :meth:`Transcript.similarity` function. Here, the default value
-                is set to::
-
-                    ['damerau', 'jaro', 'winkler']
 
             algs_match: The algorithms to use for calculating the actual
                 similarities between strings after normalization using the
@@ -367,8 +361,8 @@ class Transcript:
                 if simply the higest similarity scores should be chosen.
                 The default is ``False``, meaning that the final similarity score
                 is averaged over all used probable texts.
-            min_probably, or_best, or_best_char: Used in the :meth:`probably_texts`
-                function, see the documentation there.
+            min_probability, or_best, or_best_char: Used in the
+                :meth:`probable_texts` function, see the documentation there.
 
         Returns:
             A single similarity score if only a single transcript was given,
@@ -388,7 +382,8 @@ class Transcript:
         others = ensure_list(others)
         algs_norm, algs_match = ensure_algs_dict(algs_norm, algs_match)
         algs_match = {k: dicts_to_tuples(v) for k, v in algs_match.items()}
-        # select the texts to be used, with either a minimum probably, or not.
+        # select the texts to be used, with either a minimum probability, or
+        # not.
         if min_probability is not None:
             texts = self.probable_texts(min_probability, or_best=or_best,
                                         or_best_char=or_best_char)
@@ -442,7 +437,7 @@ class Recording:
     Args:
         filepath: The path to the audio file.
         transcriptor: The :class:`speechmatching.model.Transcriptor` to use for the transcribing the
-            recording. This is optional. If not given, a global one is`
+            recording. This is optional. If not given, a global one is
             created and used.
         preload: Whether the audio file should be processed upon
             initialization of this class. This may significantly increase
@@ -546,11 +541,12 @@ class Recording:
         *args,
         **kwargs
     ) -> typing.Union[None, Group, typing.List[Group]]:
-        """Match the current :class"`Recording` with multiple :class:`Group`\ s.
+        """Match the current :class:`Recording` with multiple :class:`Group`\ s.
 
         Matching of one recording with multiple groups will allow for a single
         group, multiple groups, or no groups to be found to match the
-        recording depending on the given arguments.
+        recording depending on the given arguments, see the descriptions of the
+        parameters for more information on this.
 
         The normalization and matching algorithms used here are by default set
         to the values that were found to work best according to the thesis for
@@ -569,7 +565,7 @@ class Recording:
                 argument ``use_min_group_size`` decides how many recordings of
                 each group will be used.
             use_min_group_size: If set to ``True``, then if one of the groups has
-                fewer than ``size`` recordings, than ``size`` is readjusted to the
+                fewer than ``size`` recordings, ``size`` is readjusted to the
                 size of this group so an equal number of recordings from each
                 group is used.
             algs_norm: See the documentation for the
@@ -679,8 +675,8 @@ class Group:
                 }
 
             An empty dictionary is used if nothing is given.
-        recordings: The Recording to initially load. If nothing is given, the
-            group is initialized empty.
+        recordings: The list :class:`Recording`\ s to initially load. If
+            nothing is given, the group is initialized empty.
     """
 
     def __init__(
@@ -736,11 +732,11 @@ class Group:
         del self._recordings[recording.identifier]
 
     def set_label(self, k: str, v: str):
-        """Set or replace a new label.
+        """Set or replace a label.
 
         Args:
-            k: The key for the label.
-            v: The label itself.
+            k: The key of the label.
+            v: The value of the label.
         """
         self._labels[k] = v
 
@@ -807,7 +803,7 @@ class Group:
                 with ``_sub`` appended to it.
 
         Returns:
-            The new :class:`Group` of given ``size` and with given
+            The new :class:`Group` of given ``size`` and with given
             ``identifier``.
         """
         identifier = identifier or self._identifier
@@ -830,27 +826,27 @@ def load_directory(
     return_empty: bool = False,
     verbose: bool = True
 ) -> typing.Optional[Group]:
-    """Create a `Group` with all audio files in a directory.
+    """Create a :class:`Group` with all audio files in a directory.
 
-    Any audio files ending with `_processed.wav` in the directory will be
+    Any audio files ending with ``_processed.wav`` in the directory will be
     ignored, as this is the filename ending used for audio files that have been
-    converted into the format used by the `acoustic` binary for transcribing.
+    converted into the format used by the ``acoustic`` binary for transcribing.
 
     Args:
         directory: The directory from which load the audio files.
-        transcripts: The `Transcriptor` to use for transcribing. If not given,
-            a global one will be used.
-        identifier: The identifier of the new `Group`. If not set, the name of
-            the directory will be used instead.
+        transcriptor: The :class:`speechmatching.model.Transcriptor` to use for
+            transcribing. If not given, a global one will be used.
+        identifier: The identifier of the new :class:`Group`. If not set, the
+            name of the directory will be used instead.
         labels: A dictionary of the labels to set.
-        return_empty: If set to `True`, an empty `Group` is created if the
-            directory contains no audio files. Default if `False`.
+        return_empty: If set to ``True``, an empty :class:`Group` is created if
+            the directory contains no audio files. Default is ``False``.
         verbose: Whether to output the progress of loading files. Default is
-            `True`.
+            ``True``.
 
     Returns:
-        The `Group` with loaded audio files, or `None` if no audio files were
-        found, and `return_empty` is `False`.
+        The :class:`Group` with loaded audio files, or ``None`` if no audio
+        files were found, and ``return_empty`` is ``False``.
     """
     recordings = []
     filenames = os.listdir(directory)
@@ -882,17 +878,19 @@ def load_directory_groups(
     """Load multiple :class:`Group`\ s of :class:`Recording`\ s from a directory.
 
     The given ``directory`` should contain multiple directories which each
-    containing the audio files for a :class:`Group`\ . If a directory does not contain
-    audio files, it may be ignored depending on the ``return_empty`` argument.
+    containing the audio files for a :class:`Group`\ . If a directory does not
+    contain audio files, it may be ignored depending on the ``return_empty``
+    argument.
 
     If a ``<directory>_metadata.json`` file is present in the directory next to
-    the directory containing :class:`Recording`\ s for the :class:`Group`\ , the identifier and
-    labels from this JSON file will be adopted for the new :class:`Group`\ , else
-    default values documented in the arguments of this function will be used.
+    the directory containing :class:`Recording`\ s for the :class:`Group`\ ,
+    the identifier and labels from this JSON file will be adopted for the new
+    :class:`Group`\ , else default values documented in the arguments of this
+    function will be used.
 
     The ``<directory>_metadata.json`` is of format JSON and can hold one of the
-    keys ``identifier`` and ``label``, with ``label`` being a dictionary with strings
-    as keys and values. An example is::
+    keys ``identifier`` and ``label``, with ``label`` being a dictionary with
+    strings as keys and values. An example is::
 
         {
             "identifier": "mygroup",
@@ -905,13 +903,14 @@ def load_directory_groups(
     Args:
         directory: The directory from which directories of audio files are
             loaded into :class:`Group`\ s.
-        transcriptor: The :class:`speechmatching.model.Transcriptor` to use for the processing the audio
-            files. If not given, a global one will be used.
+        transcriptor: The :class:`speechmatching.model.Transcriptor` to use for
+            the processing the audio files. If not given, a global one will be
+            used.
         return_empty: Whether to create an empty :class:`Group` if a subdirectory
             does not contain any audio files.
 
     Returns:
-        A dictionary of the created :class:`Group`\ s with the identifier as key,
+        A dictionary of the created :class:`Group`\ s with their identifier as key,
         and the created :class:`Group` as value.
     """
     groups = {}

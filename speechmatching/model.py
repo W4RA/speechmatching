@@ -151,7 +151,7 @@ class Model(abc.ABC):
         """Add a running model to keep track of.
 
         It is important to keep track of the instances of the model that are in
-        used in order to stop these instances when the program closes.
+        use in order to stop these instances when the program closes.
 
         Args:
             instance: The model to register.
@@ -185,9 +185,9 @@ class LocalModel(Model):
     This model can be used when the ``acoustic`` binary and the required
     libraries have been compiled and are available locally. This is the case
     when this code is run in Docker with the compiled binary, or when effort
-    has been put in to compile the binary locally explicitly.
+    has been put in to compile the binary locally outside of Docker.
 
-    When not running in docker from the ``aukesch/speechmatching`` image, this
+    When not running in Docker from the ``aukesch/speechmatching`` image, this
     model should likely not be used, and the :class:`DockerModel` should be
     used instead.
 
@@ -223,7 +223,7 @@ class LocalModel(Model):
 
         Returns:
             A :class:`subprocess.Popen` instance that communicates with the
-            ``acoustic`` binary over stdin/stdout.
+            ``acoustic`` binary over standard input and output.
 
         Raises:
             Exception: In case the binary is not found.
@@ -295,7 +295,8 @@ class LocalModel(Model):
 
         Args:
             filepath: The filepath to read from. This is by default the default
-                file the ``acoustic`` binary writes results to.
+                file the ``acoustic`` binary writes results to, which is
+                defined in the :class:`speechmatching.config.Config` class.
 
         Returns:
             A line of output from standard output.
@@ -363,9 +364,9 @@ class DockerModel(Model):
 
         The names for the Docker images listed in
         :class:`speechmatching.config.Config` are checked in order, and if one
-        if found to exist, it is returned.
+        is found to exist, it is returned.
 
-        If no images are found to exist, the first image containing ``/`` is
+        If no images are found to exist, the first image name containing ``/`` is
         pulled if ``pull_image`` was not set to ``False`` on initialization of
         this class. After pulling, the name of the pulled Docker image is
         returned.
@@ -446,7 +447,8 @@ class DockerModel(Model):
 
         Args:
             container: The container to be checked.
-            interval: The interval with which should be checked, default is 2.
+            interval: The interval in seconds with which should be checked,
+                default is 2.
         """
         while True:
             if self._stop_alive_checker:
@@ -461,7 +463,7 @@ class DockerModel(Model):
 
     @functools.cached_property
     def _container_stdout(self) -> socket.SocketIO:
-        """The socket for stdout to the running container.
+        """The socket for standard output from the running container.
 
         Returns:
             The socket to the container to read information from.
@@ -476,7 +478,7 @@ class DockerModel(Model):
 
     @functools.cached_property
     def _container_stdout_lines(self) -> typing.Iterator[str]:
-        """Iterator over lines from the stdout socket.
+        """Iterator over lines from the standard output socket.
 
         Yields:
             A line read from standard output from the container.
@@ -543,7 +545,7 @@ class DockerModel(Model):
 
         Args:
             src_filepath: Path to the file on the host machine.
-            dst_dirpath: Path to where to copy the file from ``src_filepath`` to
+            dst_dirpath: Path to copy the file from ``src_filepath`` to
                 on the container.
 
         Returns:
@@ -594,7 +596,9 @@ class DockerModel(Model):
 
         Args:
             filepath: The filepath to read from. This is by default the default
-                file the ``acoustic`` binary writes results to in the container.
+                file the ``acoustic`` binary writes results to in the
+                container, which is defined in the
+                :class:`speechmatching.config.Config` class.
 
         Returns:
             The result from the model after processing an audio file.
@@ -620,11 +624,11 @@ class Transcriptor:
     """The transcriptor for guiding the transcribing process.
 
     Args:
-        model_location: What model to use, can have either value ``local``, or
+        model_location: The model to use, can have either value ``local``, or
             value ``docker``. If not set, the value will be attempted to be
             determined by looking for the ``ACOUSTIC_RUNNING_IN_DOCKER``
             environment variable set by the ``aukesch/speechmatching`` or
-            ``speechmatching`` Docker image, if it is being used.
+            ``speechmatching`` Docker images, if one of them is being used.
     """
 
     def __init__(self, model_location: typing.Optional[str] = None):
@@ -673,11 +677,11 @@ class Transcriptor:
         the model.
 
         The given audio or video file is first processed into a WAV file of a
-        single channel and 16000 Hertz. If the Docker model is running, the
+        single channel and 16000 hertz. If the Docker container is running, the
         file is copied into the running container. The file is then processed
         using the running ``acoustic`` binary, and the result is retrieved when
         the signal is given that processing has finished. This signal is given
-        by writing on standard output.
+        by writing on standard output from the process in the Docker container.
 
         Args:
             input_filepath: The audio or video file to process.
